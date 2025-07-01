@@ -16,7 +16,11 @@
     "xlsx": "^0.18.5",
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",
+xpptba-codex/develop-poct-eqa-analysis-web-app
+    "react-router-dom": "^6.16.0",
+    "file-saver": "^2.0.5"
     "react-router-dom": "^6.16.0"
+main
   },
   "devDependencies": {
     "vite": "^4.4.9",
