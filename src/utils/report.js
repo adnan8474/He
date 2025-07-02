@@ -1,9 +1,5 @@
-/**
- * Utility helpers to export data from POCTIFY.
- * These functions handle CSV generation and PDF creation for both the
- * overall statistics and the inter-device comparison section.
- * All logic here is client-side and relies on html2canvas and jsPDF.
- */
+// src/utils/report.js
+
 import { saveAs } from 'file-saver';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
@@ -28,9 +24,7 @@ export function downloadCSV(content, filename) {
 }
 
 /**
- * Capture a DOM element and export it as a PDF. The height of the element
- * determines the PDF page height. This is used to allow exporting the entire
- * dashboard including charts and tables.
+ * Capture a DOM element and export it as a PDF with logo.
  */
 export async function exportElementPDF(element, filename) {
   const canvas = await html2canvas(element);
@@ -40,25 +34,19 @@ export async function exportElementPDF(element, filename) {
   const pageWidth = doc.internal.pageSize.getWidth();
   const ratio = pageWidth / canvas.width;
 
-  // Load logo image from /public
   const logoImg = new Image();
   logoImg.src = '/logo.png';
+  await new Promise(resolve => (logoImg.onload = resolve));
 
-  await new Promise((resolve) => {
-    logoImg.onload = resolve;
-  });
-
-  // Add logo at top
   doc.addImage(logoImg, 'PNG', 20, 20, 80, 30);
-
   const offsetY = 60;
+
   doc.addImage(imgData, 'PNG', 0, offsetY, pageWidth, canvas.height * ratio);
   doc.save(filename);
 }
 
 /**
- * Export full device-level summary as a CSV file.
- * @param {Object[]} deviceStats - summary.deviceStats array
+ * Export device summary results as CSV.
  */
 export function exportResultsCSV(deviceStats) {
   const headers = ['device', 'mean', 'sd', 'cv', 'n'];
@@ -73,18 +61,10 @@ export function exportResultsCSV(deviceStats) {
 }
 
 /**
- * Build a simple CSV file summarising Bland-Altman comparison results.
- * @param {Object} comparison - result from computeInterDeviceAgreement
+ * Export Bland-Altman comparison results as CSV.
  */
 export function exportComparisonCSV(comparison) {
-  const headers = [
-    'comparison',
-    'bias',
-    'sd',
-    'lower_loa',
-    'upper_loa',
-    'n'
-  ];
+  const headers = ['comparison', 'bias', 'sd', 'lower_loa', 'upper_loa', 'n'];
   const rows = Object.entries(comparison.pairs).map(([name, stats]) => ({
     comparison: name,
     bias: stats.bias.toFixed(3),
@@ -97,8 +77,7 @@ export function exportComparisonCSV(comparison) {
 }
 
 /**
- * Export the entire inter-device comparison section as a PDF.
- * The caller passes the element reference that should be converted to an image.
+ * Export Bland-Altman comparison as PDF.
  */
 export function exportComparisonPDF(element) {
   return exportElementPDF(element, 'comparison-summary.pdf');
@@ -116,8 +95,6 @@ export function formatDate(date) {
 
 /**
  * Group an array of items by a key extractor function.
- * @param {Array} arr
- * @param {(item) => string} keyFn
  */
 export function groupBy(arr, keyFn) {
   return arr.reduce((acc, item) => {
@@ -129,7 +106,7 @@ export function groupBy(arr, keyFn) {
 }
 
 /**
- * Build a structured summary object ready for template-driven PDF generation.
+ * Structure data for future report templating.
  */
 export function generateReportData(summary, comparison) {
   const deviceTable = summary.deviceStats.map((d) => ({
