@@ -1,4 +1,3 @@
-
 /**
  * Utility helpers to export data from POCTIFY.
  * These functions handle CSV generation and PDF creation for both the
@@ -29,8 +28,9 @@ export function downloadCSV(content, filename) {
 }
 
 /**
- * Capture a DOM element and export it as a PDF with POCTIFY logo.
- * The height of the element determines the PDF page height.
+ * Capture a DOM element and export it as a PDF. The height of the element
+ * determines the PDF page height. This is used to allow exporting the entire
+ * dashboard including charts and tables.
  */
 export async function exportElementPDF(element, filename) {
   const canvas = await html2canvas(element);
@@ -40,7 +40,7 @@ export async function exportElementPDF(element, filename) {
   const pageWidth = doc.internal.pageSize.getWidth();
   const ratio = pageWidth / canvas.width;
 
-  // Load the logo image (from /public/logo.png)
+  // Load logo image from /public
   const logoImg = new Image();
   logoImg.src = '/logo.png';
 
@@ -48,14 +48,28 @@ export async function exportElementPDF(element, filename) {
     logoImg.onload = resolve;
   });
 
-  // Add the logo at the top (x=20, y=20, width=80)
+  // Add logo at top
   doc.addImage(logoImg, 'PNG', 20, 20, 80, 30);
 
-  // Leave space below the logo
   const offsetY = 60;
-
   doc.addImage(imgData, 'PNG', 0, offsetY, pageWidth, canvas.height * ratio);
   doc.save(filename);
+}
+
+/**
+ * Export full device-level summary as a CSV file.
+ * @param {Object[]} deviceStats - summary.deviceStats array
+ */
+export function exportResultsCSV(deviceStats) {
+  const headers = ['device', 'mean', 'sd', 'cv', 'n'];
+  const rows = deviceStats.map((d) => ({
+    device: d.device,
+    mean: d.mean.toFixed(2),
+    sd: d.sd.toFixed(2),
+    cv: d.cv.toFixed(2),
+    n: d.count
+  }));
+  downloadCSV(toCSV(rows, headers), 'device-summary.csv');
 }
 
 /**
@@ -116,8 +130,6 @@ export function groupBy(arr, keyFn) {
 
 /**
  * Build a structured summary object ready for template-driven PDF generation.
- * This is not used directly today but provides an example of how the data
- * could be serialised for serverless report creation in the future.
  */
 export function generateReportData(summary, comparison) {
   const deviceTable = summary.deviceStats.map((d) => ({
