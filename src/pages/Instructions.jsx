@@ -3,7 +3,7 @@ import React from 'react';
 export default function Instructions() {
   return (
     <div className="prose dark:prose-invert">
-      <h2>How to Use EQAlert — a POCTIFY Tool</h2>
+      <h2>How to Use POCSTAT — a POCTIFY Tool</h2>
       <p className="mb-4 text-sm">Your digital calculator for rapid statistical analysis of POCT device performance.</p>
       <ul>
         <li>Upload your raw EQA/verification data (CSV or XLSX)</li>
