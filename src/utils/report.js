@@ -33,12 +33,29 @@ export function downloadCSV(content, filename) {
  * dashboard including charts and tables.
  */
 export async function exportElementPDF(element, filename) {
+  export async function exportElementPDF(element, filename) {
   const canvas = await html2canvas(element);
   const imgData = canvas.toDataURL('image/png');
   const doc = new jsPDF({ orientation: 'portrait', unit: 'px', format: 'a4' });
+
   const pageWidth = doc.internal.pageSize.getWidth();
   const ratio = pageWidth / canvas.width;
-  doc.addImage(imgData, 'PNG', 0, 0, pageWidth, canvas.height * ratio);
+
+  // Load the logo image
+  const logoImg = new Image();
+  logoImg.src = '/logo.png';
+
+  await new Promise((resolve) => {
+    logoImg.onload = resolve;
+  });
+
+  // Add the logo at the top (x=20, y=20, width=80)
+  doc.addImage(logoImg, 'PNG', 20, 20, 80, 30);
+
+  // Leave space below the logo
+  const offsetY = 60;
+
+  doc.addImage(imgData, 'PNG', 0, offsetY, pageWidth, canvas.height * ratio);
   doc.save(filename);
 }
 
