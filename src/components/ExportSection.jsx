@@ -1,0 +1,50 @@
+import React, { useRef } from 'react';
+import {
+  exportElementPDF,
+  exportComparisonCSV,
+  exportComparisonPDF,
+  exportResultsCSV
+} from '../utils/report';
+export default function ExportSection({ data, comparison, targetRef }) {
+  const internalRef = useRef(null);
+  const captureRef = targetRef || internalRef;
+
+  const exportCSV = () => {
+    if (data && data.length) {
+      exportResultsCSV(data);
+    }
+  };
+
+  const exportPDF = () => {
+    if (captureRef.current) {
+      exportElementPDF(captureRef.current, 'poctify-report.pdf', {
+        title: 'POCTify Report'
+      });
+    }
+  };
+
+  const exportPairs = () => {
+    if (comparison) {
+      exportComparisonCSV(comparison);
+    }
+  };
+
+  const exportPairsPDF = () => {
+    if (comparison && captureRef.current) {
+      exportComparisonPDF(captureRef.current);
+    }
+  };
+
+  return (
+    <div ref={internalRef} className="space-x-4">
+      <button onClick={exportCSV} className="px-3 py-1 bg-green-600 text-white rounded">Export as CSV</button>
+      <button onClick={exportPDF} className="px-3 py-1 bg-purple-600 text-white rounded">Export PDF Report</button>
+      {comparison && (
+        <>
+          <button onClick={exportPairs} className="px-3 py-1 bg-blue-600 text-white rounded">Comparison CSV</button>
+          <button onClick={exportPairsPDF} className="px-3 py-1 bg-indigo-600 text-white rounded">Comparison PDF</button>
+        </>
+      )}
+    </div>
+  );
+}
