@@ -33,7 +33,7 @@ export default function Login() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-800">
       <div className="bg-white dark:bg-gray-900 p-6 rounded shadow w-80">
-        <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-gray-100">Welcome to EQAlert — a POCTIFY Tool for Rapid POCT Data Analysis</h1>
+        <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-gray-100">Welcome to POCSTAT — a POCTIFY Tool for Rapid POCT Data Analysis</h1>
         <p className="text-center mb-4 text-sm text-gray-700 dark:text-gray-300">Login to begin verifying your devices with statistical precision.</p>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
