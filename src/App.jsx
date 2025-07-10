@@ -9,8 +9,8 @@ export default function App({ children }) {
     <div>
       <nav className="p-4 bg-blue-600 text-white flex justify-between">
         <div className="flex items-center">
-          <img src="/logo.png" alt="EQAlert logo" className="h-8 mr-2" />
-          <span className="font-bold">EQAlert by POCTIFY</span>
+          <img src="/logo.png" alt="POCSTAT logo" className="h-8 mr-2" />
+          <span className="font-bold">POCSTAT by POCTIFY</span>
         </div>
         <div className="space-x-4 flex items-center">
           <Link to="/" className="hover:underline">Home</Link>
